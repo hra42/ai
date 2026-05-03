@@ -9,7 +9,7 @@ LDFLAGS := -s -w \
 	-X main.commit=$(COMMIT) \
 	-X main.date=$(DATE)
 
-.PHONY: build install run test vet fmt fmt-check tidy snapshot clean help
+.PHONY: build install run test vet lint fmt fmt-check tidy snapshot clean help
 
 build: ## Build the binary into ./ai with version metadata
 	go build -ldflags '$(LDFLAGS)' -o $(BINARY) .
@@ -25,6 +25,9 @@ test: ## Run tests
 
 vet: ## Run go vet
 	go vet ./...
+
+lint: ## Run golangci-lint
+	golangci-lint run
 
 fmt: ## Format all Go files in place
 	gofmt -w .
