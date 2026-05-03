@@ -24,13 +24,16 @@ func Append(command string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 
 	// zsh extended history: `: <unix-ts>:<elapsed>;<command>`. Multi-line
 	// commands escape newlines with a trailing backslash.
 	escaped := strings.ReplaceAll(command, "\n", "\\\n")
-	_, err = fmt.Fprintf(f, ": %d:0;%s\n", time.Now().Unix(), escaped)
-	return err
+	_, writeErr := fmt.Fprintf(f, ": %d:0;%s\n", time.Now().Unix(), escaped)
+	closeErr := f.Close()
+	if writeErr != nil {
+		return writeErr
+	}
+	return closeErr
 }
 
 func isZsh() bool {

@@ -17,6 +17,11 @@ linters:
     - unparam
 
   settings:
+    errcheck:
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
     gocritic:
       disabled-checks:
         - ifElseChain
