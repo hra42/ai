@@ -15,13 +15,13 @@ This worker is deployed via Cloudflare's GitHub integration — every push to `m
 1. Cloudflare Dashboard → **Workers & Pages** → **Create** → **Connect to Git**.
 2. Authorize the Cloudflare GitHub App on `hra42/ai` (read-only is fine).
 3. Configure:
-   - **Project name**: `ai-install`
+   - **Project name**: `ai`
    - **Production branch**: `main`
    - **Root directory**: `cloudflare`
    - **Build command**: *(leave empty)*
    - **Deploy command**: `npx wrangler deploy`
 4. Save and deploy.
-5. Confirm the route `ai.hra42.com/install` is attached (Workers → `ai-install` → Settings → Triggers → Routes). The route is declared in `wrangler.toml` and gets created on first deploy; the `hra42.com` zone must already exist in this Cloudflare account.
+5. Confirm the route `ai.hra42.com/install` is attached (Workers → `ai` → Settings → Triggers → Routes). The route is declared in `wrangler.toml` and gets created on first deploy; the `hra42.com` zone must already exist in this Cloudflare account.
 
 After setup, edits to `install-worker.js` ship on push to `main`.
 

@@ -1,4 +1,4 @@
-name = "ai-install"
+name = "ai"
 main = "install-worker.js"
 compatibility_date = "2026-05-01"
 
