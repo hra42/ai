@@ -71,7 +71,7 @@ ai <request>
 
 Generates a shell command, shows it in a review TUI with a one-line explanation, runs it on `enter`. Cancel with `esc`/`n`. Executed commands land in your zsh history.
 
-<video src="https://raw.githubusercontent.com/hra42/ai/main/media/ai_demos/1_basics_demo.mp4" controls width="700"></video>
+![Basics demo](./media/ai_demos/gifs/01_basic.gif)
 
 ### Chat mode
 
@@ -86,7 +86,7 @@ ai -c "was macht chmod 755"          # explanation only
 ai -c "wie liste ich .go dateien"    # explanation + suggested command
 ```
 
-<video src="https://raw.githubusercontent.com/hra42/ai/main/media/ai_demos/3_chat_demo.mp4" controls width="700"></video>
+![Chat demo](./media/ai_demos/gifs/03_chat.gif)
 
 ### Pipe support
 
@@ -97,7 +97,7 @@ git diff | ai -c "schreib mir eine commit message"
 
 Piped stdin is appended to the prompt as additional context. The review TUI still works because input is read from `/dev/tty`.
 
-<video src="https://raw.githubusercontent.com/hra42/ai/main/media/ai_demos/2_piping_demo.mp4" controls width="700"></video>
+![Pipe demo](./media/ai_demos/gifs/02_pipe.gif)
 
 ### Flags
 
