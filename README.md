@@ -21,6 +21,14 @@ $ ai liste alle dateien mit .go
 brew install hra42/tap/ai
 ```
 
+### Install script (macOS, Linux)
+
+```sh
+curl -fsSL https://ai.hra42.com/install | sh
+```
+
+Picks the right binary for your OS/arch, verifies the SHA-256 from `checksums.txt`, and drops it into `/usr/local/bin` (override with `INSTALL_DIR=…`). Pin a version with `VERSION=v0.1.0`.
+
 ### `go install`
 
 ```sh
