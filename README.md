@@ -27,6 +27,8 @@ cd ai
 go build -o ai .
 ```
 
+Check the installed version with `ai --version`.
+
 ## First run
 
 On first launch (no config) `ai` walks you through a TUI setup wizard:

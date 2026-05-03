@@ -13,10 +13,10 @@ import (
 )
 
 type Config struct {
-	APIKey         string `yaml:"api_key,omitempty"`
-	OpRef          string `yaml:"op_ref,omitempty"`
-	Model          string `yaml:"model,omitempty"`
-	RedactSecrets  *bool  `yaml:"redact_secrets,omitempty"`
+	APIKey        string `yaml:"api_key,omitempty"`
+	OpRef         string `yaml:"op_ref,omitempty"`
+	Model         string `yaml:"model,omitempty"`
+	RedactSecrets *bool  `yaml:"redact_secrets,omitempty"`
 }
 
 // RedactSecretsEnabled reports whether sensitive filenames should be redacted
