@@ -38,19 +38,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Download checksums.txt from release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          # gh CLI uses the GitHub API directly — immediately consistent, unlike
-          # the CDN-fronted /releases/download/... URL which can 404 briefly
-          # after the release is published.
-          gh release download "${TAG}" \
-            --repo hra42/ai \
-            --pattern checksums.txt
-
       - name: Render and push formula
         env:
           GH_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
@@ -59,30 +46,21 @@ jobs:
           set -euo pipefail
 
           version="${TAG#v}"
-          sha_for() {
-            grep " $1\$" checksums.txt | awk '{print $1}' | head -n1
-          }
-          sha_darwin_arm64=$(sha_for ai_darwin_arm64.tar.gz)
-          sha_darwin_amd64=$(sha_for ai_darwin_amd64.tar.gz)
-          sha_linux_arm64=$(sha_for ai_linux_arm64.tar.gz)
-          sha_linux_amd64=$(sha_for ai_linux_amd64.tar.gz)
 
-          for s in "$sha_darwin_arm64" "$sha_darwin_amd64" "$sha_linux_arm64" "$sha_linux_amd64"; do
-            if [ -z "$s" ]; then
-              echo "missing sha in checksums.txt" >&2
-              cat checksums.txt >&2
-              exit 1
-            fi
-          done
+          # GitHub auto-generates a source tarball at /archive/refs/tags/<TAG>.tar.gz
+          # for every tag. Compute its sha256 by streaming it through sha256sum.
+          source_url="https://github.com/hra42/ai/archive/refs/tags/${TAG}.tar.gz"
+          sha_source=$(curl -fsSL "$source_url" | sha256sum | awk '{print $1}')
+          if [ -z "$sha_source" ]; then
+            echo "failed to compute source tarball sha" >&2
+            exit 1
+          fi
 
           # Render the template.
           mkdir -p out/Formula
           sed \
             -e "s|__VERSION__|${version}|g" \
-            -e "s|__SHA_DARWIN_ARM64__|${sha_darwin_arm64}|g" \
-            -e "s|__SHA_DARWIN_AMD64__|${sha_darwin_amd64}|g" \
-            -e "s|__SHA_LINUX_ARM64__|${sha_linux_arm64}|g" \
-            -e "s|__SHA_LINUX_AMD64__|${sha_linux_amd64}|g" \
+            -e "s|__SHA_SOURCE__|${sha_source}|g" \
             .github/homebrew/ai.rb.tmpl > out/Formula/ai.rb
 
           echo "::group::Rendered Formula/ai.rb"

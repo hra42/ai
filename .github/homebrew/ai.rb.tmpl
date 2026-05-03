@@ -1,33 +1,21 @@
 class Ai < Formula
   desc "AI shell assistant — turn natural language into shell commands"
   homepage "https://github.com/hra42/ai"
-  version "__VERSION__"
+  url "https://github.com/hra42/ai/archive/refs/tags/v__VERSION__.tar.gz"
+  sha256 "__SHA_SOURCE__"
   license "Unlicense"
+  head "https://github.com/hra42/ai.git", branch: "main"
 
-  on_macos do
-    on_arm do
-      url "https://github.com/hra42/ai/releases/download/v__VERSION__/ai_darwin_arm64.tar.gz"
-      sha256 "__SHA_DARWIN_ARM64__"
-    end
-    on_intel do
-      url "https://github.com/hra42/ai/releases/download/v__VERSION__/ai_darwin_amd64.tar.gz"
-      sha256 "__SHA_DARWIN_AMD64__"
-    end
-  end
-
-  on_linux do
-    on_arm do
-      url "https://github.com/hra42/ai/releases/download/v__VERSION__/ai_linux_arm64.tar.gz"
-      sha256 "__SHA_LINUX_ARM64__"
-    end
-    on_intel do
-      url "https://github.com/hra42/ai/releases/download/v__VERSION__/ai_linux_amd64.tar.gz"
-      sha256 "__SHA_LINUX_AMD64__"
-    end
-  end
+  depends_on "go" => :build
 
   def install
-    bin.install "ai"
+    ldflags = %W[
+      -s -w
+      -X main.version=#{version}
+      -X main.commit=brew
+      -X main.date=#{time.iso8601}
+    ]
+    system "go", "build", *std_go_args(ldflags: ldflags.join(" "))
   end
 
   test do
