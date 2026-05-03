@@ -1,0 +1,16 @@
+name = "ai-install"
+main = "install-worker.js"
+compatibility_date = "2026-05-01"
+
+# Bind the worker to ai.hra42.com/install. The zone_name must match a zone you
+# own in the Cloudflare account that wrangler is authenticated against.
+routes = [
+  { pattern = "ai.hra42.com/install", zone_name = "hra42.com" },
+]
+
+# Deploy:
+#   cd cloudflare
+#   wrangler deploy
+#
+# Local dev:
+#   wrangler dev
