@@ -62,6 +62,7 @@ brews:
     repository:
       owner: hra42
       name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     directory: Formula
     homepage: https://github.com/hra42/ai
     description: "AI shell assistant — turn natural language into shell commands"
