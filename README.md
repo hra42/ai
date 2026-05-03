@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="./media/images/icon.png" alt="ai logo" width="96" />
+</p>
+
 # ai
 
 A minimal AI shell assistant CLI in Go. Type a request in natural language, get a shell command back — review it in a TUI, run it on enter.
