@@ -57,20 +57,7 @@ release:
   extra_files:
     - glob: scripts/install.sh
 
-brews:
-  - name: ai
-    repository:
-      owner: hra42
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    directory: Formula
-    homepage: https://github.com/hra42/ai
-    description: "AI shell assistant — turn natural language into shell commands"
-    license: Unlicense
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    install: |
-      bin.install "ai"
-    test: |
-      system "#{bin}/ai", "--version"
+# Homebrew formula publishing is handled outside GoReleaser by the
+# `homebrew` job in .github/workflows/release.yml — it renders
+# .github/homebrew/ai.rb.tmpl with the version + sha256s from this
+# release and pushes Formula/ai.rb into hra42/homebrew-tap.
