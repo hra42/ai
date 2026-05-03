@@ -38,6 +38,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Download checksums.txt from release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          # gh CLI uses the GitHub API directly — immediately consistent, unlike
+          # the CDN-fronted /releases/download/... URL which can 404 briefly
+          # after the release is published.
+          gh release download "${TAG}" \
+            --repo hra42/ai \
+            --pattern checksums.txt
+
       - name: Render and push formula
         env:
           GH_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
@@ -46,10 +59,6 @@ jobs:
           set -euo pipefail
 
           version="${TAG#v}"
-          release_url="https://github.com/hra42/ai/releases/download/${TAG}"
-
-          # Download the release's checksums.txt and pull the four SHAs we need.
-          curl -fsSL "${release_url}/checksums.txt" -o checksums.txt
           sha_for() {
             grep " $1\$" checksums.txt | awk '{print $1}' | head -n1
           }
