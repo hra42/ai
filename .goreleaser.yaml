@@ -1,0 +1,75 @@
+version: 2
+
+project_name: ai
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: ai
+    main: .
+    binary: ai
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git
+  sort: asc
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 0
+    - title: Bug fixes
+      regexp: '^.*?fix(\(.+\))??!?:.+$'
+      order: 1
+    - title: Chores
+      regexp: '^.*?chore(\(.+\))??!?:.+$'
+      order: 2
+    - title: Other
+      order: 999
+
+release:
+  draft: false
+  prerelease: auto
+  extra_files:
+    - glob: scripts/install.sh
+
+brews:
+  - name: ai
+    repository:
+      owner: hra42
+      name: homebrew-tap
+    directory: Formula
+    homepage: https://github.com/hra42/ai
+    description: "AI shell assistant — turn natural language into shell commands"
+    license: Unlicense
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    install: |
+      bin.install "ai"
+    test: |
+      system "#{bin}/ai", "--version"

@@ -17,6 +17,12 @@ import (
 
 const defaultModel = "anthropic/claude-sonnet-4-5"
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
 	var (
 		modelFlag string
@@ -26,9 +32,10 @@ func main() {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "ai [request...]",
-		Short: "Turn natural language into shell commands via OpenRouter",
-		Args:  cobra.ArbitraryArgs,
+		Use:     "ai [request...]",
+		Short:   "Turn natural language into shell commands via OpenRouter",
+		Version: fmt.Sprintf("%s (commit %s, built %s)", version, commit, date),
+		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return cmd.Help()
@@ -111,6 +118,7 @@ func main() {
 
 	cmd.SilenceUsage = true
 	cmd.SilenceErrors = true
+	cmd.SetVersionTemplate("{{.Version}}\n")
 	cmd.Flags().StringVar(&modelFlag, "model", "", "OpenRouter model id (overrides config)")
 	cmd.Flags().BoolVarP(&chatFlag, "chat", "c", false, "chat mode: answer the question, don't run anything")
 	cmd.Flags().BoolVarP(&printOnly, "print", "p", false, "print the command and exit, don't execute")

@@ -15,17 +15,39 @@ $ ai liste alle dateien mit .go
 
 ## Install
 
+### Homebrew (macOS, Linux)
+
+```sh
+brew install hra42/tap/ai
+```
+
+### Install script (macOS, Linux)
+
+```sh
+curl -fsSL https://ai.hra42.com/install | sh
+```
+
+Picks the right binary for your OS/arch, verifies the SHA-256 from `checksums.txt`, and drops it into `/usr/local/bin` (override with `INSTALL_DIR=…`). Pin a version with `VERSION=v0.1.0`.
+
+### `go install`
+
 ```sh
 go install github.com/hra42/ai@latest
 ```
 
-Or build from source:
+### Pre-built binaries
+
+Grab a tarball for your OS/arch from the [Releases page](https://github.com/hra42/ai/releases) and drop the `ai` binary into your `$PATH`.
+
+### From source
 
 ```sh
 git clone https://github.com/hra42/ai
 cd ai
 go build -o ai .
 ```
+
+Check the installed version with `ai --version`.
 
 ## First run
 
@@ -114,6 +136,17 @@ redact_secrets: true                  # default; set false to send raw filenames
 ```
 
 `$OPENROUTER_API_KEY` always takes precedence over the file.
+
+## Releasing
+
+Tagged pushes (`v*`) trigger `.github/workflows/release.yml`, which runs GoReleaser to build binaries for darwin/linux × amd64/arm64, publish a GitHub Release with checksums, and update the `hra42/homebrew-tap` formula.
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+A `HOMEBREW_TAP_GITHUB_TOKEN` secret (PAT with `repo` scope on `hra42/homebrew-tap`) must be configured in the repo's Actions secrets.
 
 ## License
 
