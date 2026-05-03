@@ -1,15 +1,17 @@
 # ai
 
-A minimal AI shell assistant CLI in Go. Type a request in natural language, get a shell command back.
+A minimal AI shell assistant CLI in Go. Type a request in natural language, get a shell command back — review it in a TUI, run it on enter.
 
 ```
-$ ai find all files larger than 1GB
-find / -type f -size +1G
+$ ai liste alle dateien mit .go
+
+  Suggested command
+  ╭─────────────────────────────╮
+  │ find . -name '*.go' -type f │
+  ╰─────────────────────────────╯
+  Lists all .go files in the current directory and below.
+  [enter/y] run · [esc/n] cancel
 ```
-
-## Status
-
-Phase 1 — scaffolding. The CLI takes args, calls the OpenRouter API, and prints the raw model response. No flags, config file, confirmation prompt, or command execution yet — those come in later phases.
 
 ## Install
 
@@ -25,16 +27,93 @@ cd ai
 go build -o ai .
 ```
 
+## First run
+
+On first launch (no config) `ai` walks you through a TUI setup wizard:
+
+1. **API key source** — pick one:
+   - Save plaintext in `~/.config/ai/config.yaml`
+   - Read from 1Password via secret reference (`op://Vault/Item/field`)
+   - Use `$OPENROUTER_API_KEY` env var only (nothing saved)
+2. **Model** — fuzzy-search the live OpenRouter model catalog. Hit ↑/↓, enter to pick.
+
+Re-run setup any time by deleting `~/.config/ai/config.yaml`.
+
 ## Usage
 
-Set your OpenRouter API key, then invoke `ai` with your request:
+### Command mode (default)
 
 ```sh
-export OPENROUTER_API_KEY=sk-or-...
-ai list all running docker containers
+ai <request>
 ```
 
-The model (`anthropic/claude-sonnet-4-5`) is hardcoded for now and returns the command on stdout.
+Generates a shell command, shows it in a review TUI with a one-line explanation, runs it on `enter`. Cancel with `esc`/`n`. Executed commands land in your zsh history.
+
+### Chat mode
+
+```sh
+ai -c <question>
+```
+
+Free-form Q&A. If the answer naturally implies a command (and it's actually runnable — no placeholders), the TUI offers to run it.
+
+```sh
+ai -c "was macht chmod 755"          # explanation only
+ai -c "wie liste ich .go dateien"    # explanation + suggested command
+```
+
+### Pipe support
+
+```sh
+cat error.log | ai erkläre den fehler
+git diff | ai -c "schreib mir eine commit message"
+```
+
+Piped stdin is appended to the prompt as additional context. The review TUI still works because input is read from `/dev/tty`.
+
+### Flags
+
+| Flag | Purpose |
+|---|---|
+| `-c, --chat` | Chat mode — answer the question, optionally suggest a command |
+| `-y, --yes` | Skip confirmation, run the command directly (for scripts) |
+| `-p, --print` | Print the command and exit, don't execute |
+| `--model <id>` | Override the configured model for this call |
+
+`--yes` and `--print` are required for non-TTY use (CI, pipes); without one of them the CLI errors out instead of running silently.
+
+## Context
+
+Each request includes lightweight environment context so the model can tailor commands to your system:
+
+- **Static**: OS (`darwin`/`linux`), shell (`zsh`), hostname, current working directory
+- **Working directory listing**: top-level entries, with `.gitignore` respected when inside a Git repo
+- **Git status**: branch + counts (`M=3 ?=1`), no file paths
+
+**Never sent**: file contents, env vars, recursive listings, command history, or git diffs.
+
+### Sensitive filenames
+
+Filenames that look like credentials are redacted to `[redacted]` before being sent. The list covers dotenv files, PEM/key/keystore files, SSH keys, cloud credential dirs (`.aws`, `.gcp`, `.azure`, `.kube`), shell history, Terraform state, WireGuard configs, OpenVPN profiles, and similar (see [`internal/runner/context.go`](internal/runner/context.go) for the full list).
+
+To disable redaction, edit `~/.config/ai/config.yaml`:
+
+```yaml
+redact_secrets: false
+```
+
+## Configuration
+
+`~/.config/ai/config.yaml`:
+
+```yaml
+api_key: sk-or-...                    # plaintext OpenRouter key, OR…
+op_ref: op://Vault/Item/field         # 1Password secret reference (resolved via `op read`)
+model: anthropic/claude-haiku-4.5
+redact_secrets: true                  # default; set false to send raw filenames
+```
+
+`$OPENROUTER_API_KEY` always takes precedence over the file.
 
 ## License
 
