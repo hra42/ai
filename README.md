@@ -3,7 +3,7 @@
 A minimal AI shell assistant CLI in Go. Type a request in natural language, get a shell command back — review it in a TUI, run it on enter.
 
 ```
-$ ai liste alle dateien mit .go
+$ ai list all files with .go extension
 
   Suggested command
   ╭─────────────────────────────╮
@@ -82,8 +82,8 @@ ai -c <question>
 Free-form Q&A. If the answer naturally implies a command (and it's actually runnable — no placeholders), the TUI offers to run it.
 
 ```sh
-ai -c "was macht chmod 755"          # explanation only
-ai -c "wie liste ich .go dateien"    # explanation + suggested command
+ai -c "what does chmod 755 do"            # explanation only
+ai -c "how do I list .go files"           # explanation + suggested command
 ```
 
 ![Chat demo](./media/ai_demos/gifs/03_chat.gif)
@@ -91,8 +91,8 @@ ai -c "wie liste ich .go dateien"    # explanation + suggested command
 ### Pipe support
 
 ```sh
-cat error.log | ai erkläre den fehler
-git diff | ai -c "schreib mir eine commit message"
+cat error.log | ai explain the error
+ps aux | ai -c "which process is using the most memory"
 ```
 
 Piped stdin is appended to the prompt as additional context. The review TUI still works because input is read from `/dev/tty`.
