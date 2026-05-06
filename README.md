@@ -28,10 +28,10 @@ brew install hra42/tap/ai
 ### Install script (macOS, Linux)
 
 ```sh
-curl -fsSL https://ai.hra42.com/install | sh
+curl -fsSL https://ai.hra42.lol/install | sh
 ```
 
-Picks the right binary for your OS/arch, verifies the SHA-256 from `checksums.txt`, and drops it into `/usr/local/bin` (override with `INSTALL_DIR=…`). Pin a version with `VERSION=v0.1.0`.
+Picks the right binary for your OS/arch, verifies the SHA-256 from `checksums.txt`, and drops it into `/usr/local/bin` (override with `INSTALL_DIR=…`). Pin a version with `VERSION=v0.1.4`.
 
 ### `go install`
 
@@ -152,8 +152,8 @@ redact_secrets: true                  # default; set false to send raw filenames
 Tagged pushes (`v*`) trigger `.github/workflows/release.yml`, which runs GoReleaser to build binaries for darwin/linux × amd64/arm64, publish a GitHub Release with checksums, and update the `hra42/homebrew-tap` formula.
 
 ```sh
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.1.4
+git push origin v0.1.4
 ```
 
 A `HOMEBREW_TAP_GITHUB_TOKEN` secret (PAT with `repo` scope on `hra42/homebrew-tap`) must be configured in the repo's Actions secrets.

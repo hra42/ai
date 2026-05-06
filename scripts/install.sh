@@ -2,9 +2,9 @@
 # Install the `ai` CLI from a GitHub release.
 #
 # Usage:
-#   curl -fsSL https://ai.hra42.com/install | sh
-#   curl -fsSL https://ai.hra42.com/install | VERSION=v0.1.0 sh
-#   curl -fsSL https://ai.hra42.com/install | INSTALL_DIR=$HOME/.local/bin sh
+#   curl -fsSL https://ai.hra42.lol/install | sh
+#   curl -fsSL https://ai.hra42.lol/install | VERSION=v0.1.4 sh
+#   curl -fsSL https://ai.hra42.lol/install | INSTALL_DIR=$HOME/.local/bin sh
 
 set -eu
 
