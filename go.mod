@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/hra42/openrouter-go v1.7.0
 	github.com/mattn/go-isatty v0.0.22
-	github.com/sahilm/fuzzy v0.1.1
+	github.com/sahilm/fuzzy v0.1.2
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/term v0.43.0
 	gopkg.in/yaml.v3 v3.0.1
